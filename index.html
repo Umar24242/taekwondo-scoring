@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#101619">
+	<title>Papan Skor Taekwondo</title>
+	<link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+	<div class="app-shell" id="app-shell">
+		<header class="topbar">
+			<div class="brand-lockup">
+				<span class="brand-mark" aria-hidden="true">TKD</span>
+				<div>
+					<div class="brand-name">SOUND SCORE</div>
+					<div class="brand-caption">TAEKWONDO SYSTEM</div>
+				</div>
+			</div>
+			<div class="topbar-actions">
+				<div class="sensor-status" id="sensor-status" data-state="off" role="status">
+					<span class="status-light" aria-hidden="true"></span>
+					<span id="sensor-status-text">Sensor mati</span>
+				</div>
+				<button class="sensor-button" id="sensor-button" type="button" title="Aktifkan sensor mikrofon" aria-label="Aktifkan sensor mikrofon">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v4m-4 0h8"/></svg>
+				</button>
+				<button class="menu-button" id="settings-button" type="button" aria-label="Buka pengaturan" title="Pengaturan">⋮</button>
+			</div>
+		</header>
+
+		<main class="scoreboard" aria-label="Papan skor pertandingan">
+			<section class="team team-blue" aria-label="Tim biru">
+				<div class="team-main">
+					<output class="main-score" id="blue-score" aria-label="Skor biru">0</output>
+					<svg class="camera-icon" viewBox="0 0 76 64" aria-hidden="true">
+						<circle cx="23" cy="14" r="10" /><circle cx="45" cy="14" r="10" />
+						<rect x="9" y="27" width="48" height="28" rx="4" /><path d="m57 35 13-8v28l-13-8z" />
+					</svg>
+				</div>
+				<div class="team-footer">
+					<div class="team-name">GAM-JEOM</div>
+					<output class="penalty-score" id="blue-penalties" aria-label="Gam-jeom biru">0</output>
+				</div>
+			</section>
+
+			<section class="match-center" id="match-center" data-phase="idle" aria-label="Waktu dan ronde">
+				<div class="timer-panel">
+					<div class="timer-label" id="timer-label">TIME OUT</div>
+					<output class="timer" id="timer" aria-label="Waktu tersisa">∞</output>
+				</div>
+				<div class="round-panel">
+					<div class="round-label" id="round-label">ROUND</div>
+					<div class="round-count"><output class="round-number" id="round">0</output><span id="round-total"></span></div>
+					<div class="match-status" id="match-status" role="status">Siap memulai</div>
+					<div class="break-summary" id="break-summary" hidden>
+						<span class="result-eyebrow">HASIL RONDE</span>
+						<strong class="round-result" id="break-round-score">1-0</strong>
+						<span class="result-winner" id="break-round-winner">PEMENANG RONDE · BIRU</span>
+						<span class="match-tally" id="break-match-score">HASIL PERTANDINGAN · 1-0</span>
+					</div>
+					<div class="winner-summary" id="winner-summary" hidden>
+						<span class="winner-eyebrow">WINNER</span>
+						<strong class="winner-name" id="winner-name">BIRU</strong>
+						<span class="winner-role" id="winner-role">PEMAIN</span>
+						<span class="match-tally" id="winner-match-score">HASIL PERTANDINGAN · 2-0</span>
+					</div>
+					<div class="ai-status" id="ai-status" hidden></div>
+					<div class="match-actions">
+						<button class="primary-button" id="start-button" type="button">Mulai</button>
+						<button class="reset-button" id="reset-button" type="button" title="Reset pertandingan" aria-label="Reset pertandingan">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/></svg>
+						</button>
+					</div>
+				</div>
+			</section>
+
+			<section class="team team-red" aria-label="Tim merah">
+				<div class="team-main">
+					<output class="main-score" id="red-score" aria-label="Skor merah">0</output>
+					<svg class="camera-icon" viewBox="0 0 76 64" aria-hidden="true">
+						<circle cx="23" cy="14" r="10" /><circle cx="45" cy="14" r="10" />
+						<rect x="9" y="27" width="48" height="28" rx="4" /><path d="m57 35 13-8v28l-13-8z" />
+					</svg>
+				</div>
+				<div class="team-footer">
+					<div class="team-name">GAM-JEOM</div>
+					<output class="penalty-score" id="red-penalties" aria-label="Gam-jeom merah">0</output>
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<section class="settings-screen" id="settings-screen" aria-labelledby="settings-title" hidden>
+		<header class="settings-header">
+			<button class="back-button" id="back-button" type="button" aria-label="Kembali ke papan skor">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6M9 12h12"/></svg>
+			</button>
+			<div>
+				<div class="eyebrow">KONFIGURASI PERTANDINGAN</div>
+				<h1 id="settings-title">Pengaturan</h1>
+			</div>
+			<button class="apply-button" id="apply-button" type="button">Simpan pengaturan</button>
+		</header>
+
+		<div class="settings-content">
+			<section class="settings-card general-settings" aria-labelledby="general-settings-title">
+				<div class="section-heading">
+					<div><div class="eyebrow">BERLAKU UNTUK SEMUA MODE</div><h2 id="general-settings-title">Pengaturan umum</h2></div>
+				</div>
+				<div class="general-settings-grid">
+					<label class="aggression-control" for="beep-volume-input">
+						<span><strong>Volume bip</strong><small>Atur volume bip di semua mode</small></span>
+						<output id="beep-volume-value" for="beep-volume-input">80%</output>
+						<input class="range-input" id="beep-volume-input" data-sound-volume="beepVolume" type="range" min="0" max="100" step="5" value="80">
+						<span class="range-scale"><span>0%</span><span>100%</span></span>
+					</label>
+					<label class="aggression-control" for="punch-volume-input">
+						<span><strong>Volume punch</strong><small>Atur volume suara saat poin masuk</small></span>
+						<output id="punch-volume-value" for="punch-volume-input">80%</output>
+						<input class="range-input" id="punch-volume-input" data-sound-volume="punchVolume" type="range" min="0" max="100" step="5" value="80">
+						<span class="range-scale"><span>0%</span><span>100%</span></span>
+					</label>
+					<label class="aggression-control" for="round-volume-input">
+						<span><strong>Volume start/end</strong><small>Atur volume penanda awal dan akhir ronde</small></span>
+						<output id="round-volume-value" for="round-volume-input">80%</output>
+						<input class="range-input" id="round-volume-input" data-sound-volume="roundVolume" type="range" min="0" max="100" step="5" value="80">
+						<span class="range-scale"><span>0%</span><span>100%</span></span>
+					</label>
+					<label class="number-field"><span>Durasi pertandingan / ronde</span><span class="number-control"><input id="match-duration-input" type="number" min="10" max="600" step="5" value="120"><span>detik</span></span></label>
+					<label class="number-field"><span>Hitung mundur sebelum mulai</span><span class="number-control"><input id="countdown-duration-input" type="number" min="0" max="60" step="1" value="5"><span>detik</span></span></label>
+					<label class="number-field"><span>Istirahat antarronde</span><span class="number-control"><input id="break-duration-input" type="number" min="0" max="600" step="5" value="30"><span>detik</span></span></label>
+					<div class="setting-row ai-row">
+						<div><strong>Lawan AI</strong><small>Gunakan lawan AI di Mode Timing atau Mode Teknik</small></div>
+						<label class="switch"><input id="ai-toggle" type="checkbox" checked><span class="switch-track"></span><span class="sr-only">Aktifkan lawan AI</span></label>
+					</div>
+					<label class="aggression-control" id="ai-aggression-control" for="ai-aggression-input">
+						<span><strong>Agresivitas AI</strong><small>Mengatur frekuensi poin otomatis AI</small></span>
+						<output id="ai-aggression-value" for="ai-aggression-input">3 / 10</output>
+						<input class="range-input" id="ai-aggression-input" type="range" min="1" max="10" step="1" value="3">
+						<span class="range-scale"><span>Tenang</span><span>Sangat agresif</span></span>
+					</label>
+				</div>
+			</section>
+
+			<div class="settings-grid general-details">
+				<section class="settings-card" aria-labelledby="audio-settings-title">
+					<div class="section-heading">
+						<div><div class="eyebrow">INPUT AUDIO</div><h2 id="audio-settings-title">Sensor suara</h2></div>
+						<div class="live-level"><span id="level-value">−∞</span><small>dBFS</small></div>
+					</div>
+					<p class="section-copy">Gunakan deteksi otomatis berdasarkan suara latar, atau aktifkan ambang minimal dBFS manual untuk menentukan level suara pemicu poin.</p>
+					<div class="setting-row calibration-row">
+						<div><strong>Kalibrasi ambang dB</strong><small>Atur level suara minimum untuk memasukkan poin</small></div>
+						<label class="switch"><input id="db-calibration-toggle" type="checkbox" checked><span class="switch-track"></span><span class="sr-only">Aktifkan ambang dB manual</span></label>
+					</div>
+					<div id="db-threshold-control">
+						<label class="range-label" for="sensitivity-input"><span>Ambang minimal</span><output id="sensitivity-value" for="sensitivity-input">−32 dBFS</output></label>
+						<input class="range-input" id="sensitivity-input" type="range" min="-60" max="-8" step="1" value="-32">
+						<div class="range-scale"><span>−60 dBFS</span><span>Lebih sensitif</span><span>−8 dBFS</span></div>
+					</div>
+					<div class="sensor-note"><span class="note-icon" aria-hidden="true">i</span><span>dBFS adalah level digital dari mikrofon, bukan pengukuran SPL terkalibrasi.</span></div>
+					<div class="mic-test-row">
+						<button class="outline-button" id="settings-sensor-button" type="button">Aktifkan mikrofon</button>
+						<button class="outline-button" id="mic-test-button" type="button">Tes mikrofon</button>
+					</div>
+					<div class="mic-test-status" id="mic-test-status" role="status">Belum ada tes mikrofon.</div>
+				</section>
+
+				<section class="settings-card" aria-labelledby="player-settings-title">
+					<div class="section-heading">
+						<div><div class="eyebrow">PEMAIN</div><h2 id="player-settings-title">Warna pemain</h2></div>
+					</div>
+					<p class="section-copy">Poin hasil sensor akan masuk ke sisi yang dipilih.</p>
+					<div class="color-picker" role="group" aria-label="Warna pemain">
+						<button class="color-choice color-choice-blue" type="button" data-color="blue" aria-pressed="true"><span class="color-swatch"></span>Biru</button>
+						<button class="color-choice color-choice-red" type="button" data-color="red" aria-pressed="false"><span class="color-swatch"></span>Merah</button>
+					</div>
+				</section>
+			</div>
+
+			<div class="mode-picker" role="group" aria-label="Pilih mode pertandingan">
+				<button class="mode-tab" type="button" data-mode="timing" aria-pressed="true">
+					<span class="mode-index">01</span><span><strong>Mode Timing</strong><small>Satu bip untuk membuka kesempatan poin</small></span>
+				</button>
+				<button class="mode-tab" type="button" data-mode="technique" aria-pressed="false">
+					<span class="mode-index">02</span><span><strong>Mode Teknik</strong><small>Satu, dua, atau tiga bip secara acak</small></span>
+				</button>
+			</div>
+
+			<div class="settings-grid mode-settings-grid">
+				<section class="settings-card mode-settings" id="timing-settings" aria-labelledby="timing-settings-title">
+					<div class="section-heading">
+						<div><div class="eyebrow">PENGATURAN KHUSUS</div><h2 id="timing-settings-title">Mode Timing</h2></div>
+					</div>
+					<p class="section-copy">Atur kesempatan mencetak poin yang dibuka oleh satu bip.</p>
+					<div class="timing-options">
+						<label class="number-field"><span>Jendela setelah bip</span><span class="number-control"><input id="reaction-window-input" type="number" min="0.5" max="8" step="0.5" value="2"><span>detik</span></span></label>
+						<label class="aggression-control" for="beep-tempo-input">
+							<span><strong>Tempo bip</strong><small>Mengatur seberapa sering kesempatan suara dibuka</small></span>
+							<output id="beep-tempo-value" for="beep-tempo-input">3 / 10</output>
+							<input class="range-input" id="beep-tempo-input" type="range" min="1" max="10" step="1" value="3">
+							<span class="range-scale"><span>Pelan</span><span>Cepat</span></span>
+						</label>
+						<div class="rounds-fixed"><span>Jumlah ronde</span><strong>3 ronde</strong></div>
+					</div>
+				</section>
+				<section class="settings-card mode-settings" id="technique-settings" aria-labelledby="technique-settings-title" hidden>
+					<div class="section-heading">
+						<div><div class="eyebrow">PENGATURAN KHUSUS</div><h2 id="technique-settings-title">Mode Teknik</h2></div>
+					</div>
+					<p class="section-copy">Setiap kesempatan berbunyi satu, dua, atau tiga bip secara acak. Jika suara masuk dalam jendela, pemain mendapat poin sesuai jumlah bip.</p>
+					<div class="timing-options">
+						<label class="number-field"><span>Jendela respons setelah bip</span><span class="number-control"><input id="technique-reaction-window-input" type="number" min="0.5" max="8" step="0.5" value="2"><span>detik</span></span></label>
+						<label class="aggression-control" for="technique-beep-tempo-input">
+							<span><strong>Frekuensi bip</strong><small>Mengatur seberapa sering urutan bip dimulai</small></span>
+							<output id="technique-beep-tempo-value" for="technique-beep-tempo-input">3 / 10</output>
+							<input class="range-input" id="technique-beep-tempo-input" type="range" min="1" max="10" step="1" value="3">
+							<span class="range-scale"><span>Jarang</span><span>Sering</span></span>
+						</label>
+						<div class="rounds-fixed"><span>Poin per urutan</span><strong>1, 2, atau 3 poin</strong></div>
+						<div class="rounds-fixed"><span>Jumlah ronde</span><strong>3 ronde</strong></div>
+					</div>
+				</section>
+			</div>
+			<p class="settings-footnote">Pengaturan disimpan pada perangkat ini. Akses mikrofon memerlukan izin browser dan halaman localhost atau HTTPS.</p>
+		</div>
+	</section>
+
+	<audio id="beep-audio" src="sound-effects/bip.mp3" preload="auto"></audio>
+	<audio id="round-audio" src="sound-effects/start-end.mp3" preload="auto"></audio>
+	<audio id="point-audio" src="sound-effects/punch.wav" preload="auto"></audio>
+	<audio id="technique-point-1-audio" src="sound-effects/bip1.wav" preload="auto"></audio>
+	<audio id="technique-point-2-audio" src="sound-effects/bip2.wav" preload="auto"></audio>
+	<audio id="technique-point-3-audio" src="sound-effects/bip3.wav" preload="auto"></audio>
+	<script src="script.js?v=20"></script>
+</body>
+</html>
